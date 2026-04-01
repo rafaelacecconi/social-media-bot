@@ -1,0 +1,87 @@
+{
+  "_exemplo": {
+    "name": "Dr. Nome Completo",
+    "trello_board_id": "ID_DO_QUADRO_TRELLO",
+    "drive_folder_id": "ID_DA_PASTA_RAIZ_DRIVE"
+  },
+  "NC": {
+    "name": "Dra Nathallia Chama",
+    "trello_board_id": "vOj4aw6o",
+    "drive_folder_id": "1PmEIJ5NnCe4J225prsuFVpAjBbu6TeJk"
+  },
+  "DA": {
+    "name": "Dalmo Araujo",
+    "trello_board_id": "qKlX3NWM",
+    "drive_folder_id": "129sjVMS6-NShGKI6SB1IcYnZwhQUyuVZ"
+  },
+  "GB": {
+    "name": "Dr Giuliano Bento",
+    "trello_board_id": "r4vJR54u",
+    "drive_folder_id": "1xes38UpfiXGM_gVUWLKMfR5-cTbtFS-O"
+  },
+  "HC": {
+    "name": "Dr Herbert Cunha",
+    "trello_board_id": "e4tRT8pQ",
+    "drive_folder_id": "1G7RlnKv0wtyovpxve9LLG29klsZgIMwX"
+  },
+  "JA": {
+    "name": "Dr João Augusto Guimarães",
+    "trello_board_id": "1tfop4EE",
+    "drive_folder_id": "1w0GijBaaHqOj4WCnX8QbPBJLyPh4ohUA"
+  },
+  "MF": {
+    "name": "Dr Maury Faria",
+    "trello_board_id": "wweErSQv",
+    "drive_folder_id": "1FmWzk7PNq1iy8vmdFTpd4ZwwvCRSxzbN"
+  },
+  "AA": {
+    "name": "Dra Amanda Andrade",
+    "trello_board_id": "VNbSjTu6",
+    "drive_folder_id": "1KdtGAiitpK04_FGo8LWNUyr5L-WQ1Xo_"
+  },
+  "CC": {
+    "name": "Dra Carol Ciattei",
+    "trello_board_id": "KD3AuxW1",
+    "drive_folder_id": "1OwUGpVACwxeFy0VE0zxcdNo3EpFOXtBs"
+  },
+  "GM": {
+    "name": "Dra Gabriela Maset",
+    "trello_board_id": "rhMRIbV6",
+    "drive_folder_id": "1Xy43tl5RSsRY8QPCwYCwmNqW0Jlqc8Me"
+  },
+  "NG": {
+    "name": "Dra Nathalia Gasparino",
+    "trello_board_id": "A1fVyYAO",
+    "drive_folder_id": "1YRsXJg-G4PsdOpygCPAwwUdbMmV2g1Do"
+  },
+  "NJ": {
+    "name": "Dra Nayara Jesus",
+    "trello_board_id": "aRq9kRtI",
+    "drive_folder_id": "1WC-rRew2GzEbYDJKzf9MmOmYHDCX1JLz"
+  },
+  "RB": {
+    "name": "Dra Raquel Bastos",
+    "trello_board_id": "7XZ17uTc",
+    "drive_folder_id": "1NFW-xSryj_tjJBYf7kqTUNZxTI3EZBBw"
+  },
+  "FB": {
+    "name": "Flavia Bueno",
+    "trello_board_id": "rLINbRTq",
+    "drive_folder_id": "1xVqnuIc7IfoFoCz8x7ErpB5H1j_FB14g"
+  },
+  "ICI": {
+    "name": "Iciupe",
+    "trello_board_id": "1a2AhMWd",
+    "drive_folder_id": "19t5b9OneyN7U6HVKC8tF8FQKvmG6H-qX"
+  },
+  "IEM": {
+    "name": "IEM",
+    "trello_board_id": "VeBsp4Qe",
+    "drive_folder_id": "1kh8AvDQL_iUJnNsBldBmeqLQ4NTaQEMe"
+  },
+  "GG": {
+    "name": "Dra Gabriela Giglio",
+    "trello_board_id": "eqaoawrp",
+    "drive_folder_id": "1Xy43tl5RSsRY8QPCwYCwmNqW0Jlqc8Me"
+  }
+}

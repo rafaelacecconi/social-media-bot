@@ -1,0 +1,17 @@
+# Ambiente virtual
+venv/
+
+# Variáveis de ambiente e credenciais
+.env
+credentials.json
+
+# Logs
+*.log
+
+# Mac
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
