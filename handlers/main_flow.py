@@ -8,9 +8,11 @@ Main conversation flow:
   5. On confirmation, folders and cards are created
 """
 
+import os
 import re
 import json
 import logging
+from pathlib import Path
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -27,9 +29,13 @@ WAITING_CONFIRMATION = 2
 
 DOC_ID_RE = re.compile(r'/document/d/([a-zA-Z0-9_-]+)')
 
+_DOCTORS_FILE = Path(__file__).parent.parent / "data" / "doctors.json"
+
 
 def _load_doctors() -> dict:
-    with open("data/doctors.json") as f:
+    tmp = Path("/tmp/doctors.json")
+    path = tmp if tmp.exists() else _DOCTORS_FILE
+    with open(path) as f:
         return json.load(f)
 
 

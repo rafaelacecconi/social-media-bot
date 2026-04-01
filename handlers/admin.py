@@ -10,12 +10,14 @@ Admin commands for managing the doctors configuration.
 import json
 import logging
 import re
+from pathlib import Path
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 logger = logging.getLogger(__name__)
 
-DOCTORS_FILE = "data/doctors.json"
+_DOCTORS_REPO = Path(__file__).parent.parent / "data" / "doctors.json"
+_DOCTORS_TMP  = Path("/tmp/doctors.json")
 
 # Conversation states
 ASK_INITIALS      = 10
@@ -25,13 +27,21 @@ ASK_DRIVE_FOLDER  = 13
 
 
 def _load() -> dict:
-    with open(DOCTORS_FILE) as f:
+    path = _DOCTORS_TMP if _DOCTORS_TMP.exists() else _DOCTORS_REPO
+    with open(path) as f:
         return json.load(f)
 
 
 def _save(data: dict) -> None:
-    with open(DOCTORS_FILE, "w") as f:
+    # Always write to /tmp (works on Vercel and locally)
+    with open(_DOCTORS_TMP, "w") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    # Also try repo file (works locally, falha silenciosamente na Vercel)
+    try:
+        with open(_DOCTORS_REPO, "w") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except OSError:
+        pass
 
 
 def _real_doctors(data: dict) -> dict:
