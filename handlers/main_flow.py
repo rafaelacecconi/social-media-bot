@@ -19,13 +19,16 @@ from telegram.ext import ContextTypes, ConversationHandler
 from services.docs  import get_entries_from_doc
 from services.drive import ensure_day_folder
 from services.trello import create_card
-from utils.parser  import parse_day_range
+from utils.parser       import parse_day_range
+from utils.story_parser import is_story_doc, extract_client_from_lines, parse_story_cards
+from handlers.story_flow import start_story_flow
 
 logger = logging.getLogger(__name__)
 
 # Conversation states
 WAITING_DAYS         = 1
 WAITING_CONFIRMATION = 2
+# Story states (3-4) live in story_flow.py
 
 DOC_ID_RE = re.compile(r'/document/d/([a-zA-Z0-9_-]+)')
 
@@ -85,9 +88,11 @@ async def receive_doc_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     await update.message.reply_text("Lendo o documento... ⏳")
 
     try:
-        entries_placeholder, initials, title = get_entries_from_doc(
-            doc_id, list(range(1, 32)), list(real_doctors.keys())
-        )
+        from services.docs import _build_service, extract_text_lines
+        service  = _build_service()
+        document = service.documents().get(documentId=doc_id).execute()
+        title    = document.get("title", "")
+        lines    = extract_text_lines(document)
     except Exception as e:
         logger.error("Erro ao ler o doc: %s", e)
         await update.message.reply_text(
@@ -97,9 +102,39 @@ async def receive_doc_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         )
         return ConversationHandler.END
 
+    # ── Detect story doc and route to story flow ──────────────────────────────
+    if is_story_doc(lines):
+        initials = extract_client_from_lines(lines, list(real_doctors.keys()))
+
+        if not initials or initials not in real_doctors:
+            await update.message.reply_text(
+                f"Documento de stories detectado, mas não reconheci o cliente.\n\n"
+                "A primeira linha do doc deve começar com as siglas cadastradas.\n"
+                "Use /listar\\_medicos para ver as siglas.",
+                parse_mode="Markdown",
+            )
+            return ConversationHandler.END
+
+        cards = parse_story_cards(lines)
+        if not cards:
+            await update.message.reply_text("Nenhum story card encontrado no documento.")
+            return ConversationHandler.END
+
+        context.user_data["doc_id"]      = doc_id
+        context.user_data["initials"]    = initials
+        context.user_data["doctor"]      = real_doctors[initials]
+        context.user_data["story_cards"] = cards
+        return await start_story_flow(update, context)
+
+    # ── Daily content flow ────────────────────────────────────────────────────
+    from utils.parser import extract_initials_from_title, detect_month_year
+    from utils.parser import parse_entries as _parse_entries
+
+    initials = extract_initials_from_title(title, list(real_doctors.keys()))
+
     if not initials or initials not in real_doctors:
         await update.message.reply_text(
-            f"Não reconheci o médico pelo título: *{title}*\n\n"
+            f"Não reconheci o cliente pelo título: *{title}*\n\n"
             "Use /listar\\_medicos para ver as siglas cadastradas.",
             parse_mode="Markdown",
         )

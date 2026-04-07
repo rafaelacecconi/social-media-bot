@@ -57,3 +57,14 @@ def ensure_day_folder(root_folder_id: str, year: int, month_name: str, day_folde
     day_id   = _get_or_create_folder(service, day_folder,   month_id)
 
     return f"https://drive.google.com/drive/folders/{day_id}"
+
+
+def ensure_story_folder(root_folder_id: str, folder_name: str) -> str:
+    """
+    Guarantee the path: root > STORIES > folder_name
+    Returns the public URL of the story card folder.
+    """
+    service    = _build_service()
+    stories_id = _get_or_create_folder(service, "STORIES",   root_folder_id)
+    card_id    = _get_or_create_folder(service, folder_name, stories_id)
+    return f"https://drive.google.com/drive/folders/{card_id}"

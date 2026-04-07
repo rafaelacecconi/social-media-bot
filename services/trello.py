@@ -42,6 +42,39 @@ def get_list_id(board_id: str, month: int) -> str | None:
     return None
 
 
+def get_list_id_by_name(board_id: str, list_name: str) -> str | None:
+    """Find a list by exact name (case-insensitive)."""
+    lists = _get(f"/boards/{board_id}/lists")
+    for lst in lists:
+        if lst["name"].strip().lower() == list_name.strip().lower():
+            return lst["id"]
+    return None
+
+
+def create_simple_card(board_id: str, list_name: str, title: str) -> dict:
+    """Create a card without due date in a list found by name."""
+    list_id = get_list_id_by_name(board_id, list_name)
+    if not list_id:
+        raise ValueError(
+            f"Lista '{list_name}' não encontrada no quadro. "
+            "Verifique o nome exato da lista no Trello."
+        )
+    return _post("/cards", name=title, idList=list_id)
+
+
+def create_story_card(board_id: str, list_name: str, card_title: str, description: str) -> dict:
+    """Create a story card in the given list."""
+    list_id = get_list_id_by_name(board_id, list_name)
+    if not list_id:
+        lists = _get(f"/boards/{board_id}/lists")
+        available = ", ".join(f"'{l['name']}'" for l in lists)
+        raise ValueError(
+            f"Lista '{list_name}' não encontrada.\n"
+            f"Listas disponíveis: {available}"
+        )
+    return _post("/cards", name=card_title, desc=description, idList=list_id)
+
+
 def get_label_id(board_id: str, label_name: str) -> str | None:
     """Find a label by name (case-insensitive)."""
     labels = _get(f"/boards/{board_id}/labels")

@@ -19,6 +19,12 @@ from handlers.main_flow import (
     WAITING_DAYS,
     WAITING_CONFIRMATION,
 )
+from handlers.story_flow import (
+    receive_story_list,
+    confirm_stories,
+    WAITING_STORY_LIST,
+    WAITING_STORY_CONFIRMATION,
+)
 from handlers.admin import (
     adicionar_medico_start,
     ask_name,
@@ -32,6 +38,18 @@ from handlers.admin import (
     ASK_NAME,
     ASK_TRELLO_BOARD,
     ASK_DRIVE_FOLDER,
+)
+from handlers.bulk_list import (
+    subir_lista_start,
+    ask_list_name,
+    ask_items,
+    preview_items,
+    bulk_confirm,
+    cancel_bulk,
+    ASK_DOCTOR,
+    ASK_LIST_NAME,
+    ASK_ITEMS,
+    BULK_CONFIRMATION,
 )
 
 load_dotenv()
@@ -53,6 +71,7 @@ async def start(update: Update, _) -> None:
         "/adicionar\\_medico — cadastrar médico\n"
         "/listar\\_medicos   — ver médicos cadastrados\n"
         "/remover\\_medico   — remover médico\n"
+        "/subir\\_lista      — subir lista sem data para o Trello\n"
         "/cancelar          — cancelar operação",
         parse_mode="Markdown",
     )
@@ -74,8 +93,10 @@ def main() -> None:
             )
         ],
         states={
-            WAITING_DAYS:         [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_days)],
-            WAITING_CONFIRMATION: [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm)],
+            WAITING_DAYS:                [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_days)],
+            WAITING_CONFIRMATION:        [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm)],
+            WAITING_STORY_LIST:          [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_story_list)],
+            WAITING_STORY_CONFIRMATION:  [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm_stories)],
         },
         fallbacks=[CommandHandler("cancelar", cancel)],
     )
@@ -92,10 +113,23 @@ def main() -> None:
         fallbacks=[CommandHandler("cancelar", cancel_admin)],
     )
 
+    # ── Bulk list flow ────────────────────────────────────────────────────────
+    bulk_list_conv = ConversationHandler(
+        entry_points=[CommandHandler("subir_lista", subir_lista_start)],
+        states={
+            ASK_DOCTOR:        [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_list_name)],
+            ASK_LIST_NAME:     [MessageHandler(filters.TEXT & ~filters.COMMAND, ask_items)],
+            ASK_ITEMS:         [MessageHandler(filters.TEXT & ~filters.COMMAND, preview_items)],
+            BULK_CONFIRMATION: [MessageHandler(filters.TEXT & ~filters.COMMAND, bulk_confirm)],
+        },
+        fallbacks=[CommandHandler("cancelar", cancel_bulk)],
+    )
+
     app.add_handler(CommandHandler("start",          start))
     app.add_handler(CommandHandler("listar_medicos", listar_medicos))
     app.add_handler(CommandHandler("remover_medico", remover_medico))
     app.add_handler(add_doctor_conv)
+    app.add_handler(bulk_list_conv)
     app.add_handler(main_conv)
 
     logger.info("Bot iniciado.")
