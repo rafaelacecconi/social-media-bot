@@ -115,9 +115,16 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(length)
-        asyncio.run(_process_update(body))
-        self.send_response(200)
-        self.end_headers()
+        try:
+            asyncio.run(_process_update(body))
+            self.send_response(200)
+            self.end_headers()
+        except Exception as e:
+            import traceback
+            logging.error("Erro no webhook: %s\n%s", e, traceback.format_exc())
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(traceback.format_exc().encode())
 
     def do_GET(self):
         self.send_response(200)
